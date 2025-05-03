@@ -1,7 +1,11 @@
 var actionWEnergy = {
     /** @param {Creep} creep **/
     run: function (creep) {
-        var drop = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+        var drop = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+            filter: (s) => {
+                return s.amount > creep.store.getCapacity() / 2;
+            }
+        });
         creep.pickup(drop);
         var store = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => {
@@ -13,12 +17,12 @@ var actionWEnergy = {
             creep.moveTo(drop);
         } else if (store) {
             if (creep.withdraw(store, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(store, {visualizePathStyle: {stroke: '#ffaa00'}});
+                creep.moveTo(store, { visualizePathStyle: { stroke: '#ffaa00' } });
             }
         } else {
             var source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
             if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+                creep.moveTo(source, { visualizePathStyle: { stroke: '#ffaa00' } });
             }
         }
     }

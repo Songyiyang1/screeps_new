@@ -13,8 +13,18 @@ var roleHarvester = {
                 return creeps.length == 0;
             }
         });
+        var container = source.pos.findInRange(FIND_STRUCTURES, 1, {
+            filter: s => {
+                return s.structureType == STRUCTURE_CONTAINER;
+            }
+        })[0];
+        /*var source = source.pos.findClosestByRange(FIND_MY_STRUCTURES, 1, {
+            filter: (s) => {
+                return s.structureType == STRUCTURE_CONTAINER;
+            }
+        });
 
-        /*var flags = creep.room.find(FIND_FLAGS, {
+        var flags = creep.room.find(FIND_FLAGS, {
             filter: (Object) => {
                 return Object.color == COLOR_YELLOW && Object.secondaryColor == COLOR_YELLOW;
             }
@@ -41,11 +51,20 @@ var roleHarvester = {
             }
         })[0];*/
         creep.harvest(source);
-        creep.moveTo(source, {
-            visualizePathStyle: {
-                stroke: '#ffaa00'
-            }
-        });
+        if (container) {
+            creep.moveTo(container, {
+                visualizePathStyle: {
+                    stroke: '#ffaa00'
+                }
+            });
+        }
+        else {
+            creep.moveTo(source, {
+                visualizePathStyle: {
+                    stroke: '#ffaa00'
+                }
+            });
+        }
         /*var link = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (Object) => {
                 return Object.structureType == STRUCTURE_LINK;

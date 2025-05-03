@@ -30,36 +30,40 @@ module.exports.loop = function () {
                         transporter.push(Game.creeps[name]);
                         break;
                 }
-            }
-            var creep = Game.creeps[name];
-            creep.say(creep.memory.role);
-            switch (creep.memory.role) {
-                case 'harvester':
-                    roleHarvester.run(creep);
-                    break;
-                case 'upgrader':
-                    roleUpgrader.run(creep);
-                    break;
-                case 'builder':
-                    roleBuilder.run(creep);
-                    break;
-                case 'transporter':
-                    roleTransporter.run(creep);
-                    break;
+                var creep = Game.creeps[name];
+                creep.say(creep.memory.role);
+                switch (creep.memory.role) {
+                    case 'harvester':
+                        roleHarvester.run(creep);
+                        break;
+                    case 'upgrader':
+                        roleUpgrader.run(creep);
+                        break;
+                    case 'builder':
+                        roleBuilder.run(creep);
+                        break;
+                    case 'transporter':
+                        roleTransporter.run(creep);
+                        break;
+                }
             }
         }
     }
-    if (harvesters.length < 2) {
-        Game.spawns['Spawn1'].createCustomCreep(Game.spawns['Spawn1'].room.energyAvailable, 'harvester', [WORK, WORK, MOVE]);
-    } else if (transporter < 2) {
-        Game.spawns['Spawn1'].createCustomCreep(Game.spawns['Spawn1'].room.energyAvailable, 'transporter', [CARRY, CARRY, MOVE]);
-    } else if (builders.length < 2) {
-        Game.spawns['Spawn1'].createCustomCreep(Game.spawns['Spawn1'].room.energyAvailable, 'builder', [WORK, CARRY, MOVE]);
-    } else if (upgrader.length < 2) {
-        Game.spawns['Spawn1'].createCustomCreep(Game.spawns['Spawn1'].room.energyAvailable, 'upgrader', [WORK, CARRY, MOVE]);
+    var energyAvailable = Game.spawns['Spawn1'].room.energyAvailable;
+    if (!Game.spawns['Spawn1'].spawning && energyAvailable >= 250) {
+        if (harvesters.length < 2) {
+            Game.spawns['Spawn1'].createCustomCreep(energyAvailable, 'harvester');
+        } else if (transporter < 2) {
+            Game.spawns['Spawn1'].createCustomCreep(energyAvailable, 'transporter');
+        } else if (Game.spawns['Spawn1'].pos.findClosestByPath(FIND_CONSTRUCTION_SITES) != null && builders.length < 2) {
+            Game.spawns['Spawn1'].createCustomCreep(energyAvailable, 'builder');
+        } else if (upgrader.length < 2) {
+            Game.spawns['Spawn1'].createCustomCreep(energyAvailable, 'upgrader');
+        }
     }
 
 
 
-    console.log('Energy in Room ' + Game.spawns['Spawn1'].room.name + ' is ' + Game.spawns['Spawn1'].room.energyAvailable);
+
+    console.log('Energy in Room ' + Game.spawns['Spawn1'].room.name + ' is ' + energyAvailable);
 }
