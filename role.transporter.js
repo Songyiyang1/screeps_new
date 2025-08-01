@@ -23,6 +23,9 @@ var roleTansporter = {
                 creep.withdraw(stored_resources, RESOURCE_ENERGY);
                 creep.moveTo(stored_resources, { visualizePathStyle: { stroke: '#ffffff' } });
             }
+            else{
+                creep.moveTo(dropped_resources);
+            }
         }
         else {
             var storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {

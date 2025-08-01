@@ -1,15 +1,15 @@
 require('prototype.spawn')();
-var roleHarvester = require('role.harvester');
-var roleBuilder = require('role.builder');
-var roleUpgrader = require('role.upgrader');
-var roleTransporter = require('role.transporter');
+const roleHarvester = require('role.harvester');
+const roleBuilder = require('role.builder');
+const roleUpgrader = require('role.upgrader');
+const roleTransporter = require('role.transporter');
 
 module.exports.loop = function () {
     var harvesters = [];
     var builders = [];
     var upgrader = [];
     var transporter = [];
-    if (!Memory.creeps) Game.spawns['Spawn1'].init(); //初始化内存
+    if (!Game.spawns['Spawn1'].memory.is_init) Game.spawns['Spawn1'].init(); //初始化内存
     else {
         for (var name in Memory.creeps) {
             if (!Game.creeps[name]) {
@@ -59,10 +59,10 @@ module.exports.loop = function () {
             Game.spawns['Spawn1'].createCustomCreep(energyAvailable, 'builder');
         } else if (upgrader.length < 2) {
             Game.spawns['Spawn1'].createCustomCreep(energyAvailable, 'upgrader');
+        } else {
+            Game.spawns['Spawn1'].createCustomCreep(energyAvailable, upgrader.length > builders.length ? 'builder' : 'upgrader');
         }
     }
-
-
 
 
     console.log('Energy in Room ' + Game.spawns['Spawn1'].room.name + ' is ' + energyAvailable);

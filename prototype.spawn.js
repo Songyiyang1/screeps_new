@@ -6,9 +6,22 @@ module.exports = function () {
     const upgraderBody = [MOVE, WORK, CARRY, WORK, WORK, MOVE, WORK, CARRY, WORK, WORK, MOVE, WORK, CARRY, WORK, WORK, MOVE, WORK, CARRY, WORK, WORK,];
     StructureSpawn.prototype.init =
         function () {
+            this.memory.is_init = true;
             var sources = this.room.find(FIND_SOURCES);
             for (let source of sources) {
                 source.pos.createFlag(source.id, COLOR_YELLOW, COLOR_YELLOW);
+                var Path = PathFinder.search(this.pos, source.pos);
+                for (i = 0; i < Path.path.length; i++) {
+                    if (this.room.lookAt(Path.path[i]).every(item => item.type === 'terrain')) {
+                        console.log("building at" + Path.path[i]);
+                        if (i == Path.path.length - 1) {
+                            this.room.createConstructionSite(Path.path[i], STRUCTURE_CONTAINER);
+                            break;
+                        }
+                        this.room.createConstructionSite(Path.path[i], STRUCTURE_ROAD);
+                    }
+                }
+
             }
         };
     StructureSpawn.prototype.createCustomCreep =
@@ -17,6 +30,7 @@ module.exports = function () {
             //MOVE 	50; WORK 	100; CARRY 	50; ATTACK 	80; RANGED_ATTACK 	150; HEAL 	250; CLAIM 	600; TOUGH 	10;
             var body = [];
             var sum = 0;
+            let Parts = [];
             switch (roleName) {
                 case 'harvester':
                     Parts = harvesterBody;
